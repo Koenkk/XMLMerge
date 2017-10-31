@@ -13,7 +13,6 @@ namespace XMLMerge
     class Program
     {
         private static string datasetname = "AfasGetConnector";
-        private static string itemname = "_MI2_MedewerkerJournaalpost";
 
 
         private static ArrayList initializeParameters(string directory, string filename)
@@ -88,7 +87,7 @@ namespace XMLMerge
             }
         }
         
-        private static DataSet mergeXMLFiles(ArrayList files)
+        private static DataSet mergeXMLFiles(ArrayList files, string tablename)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.ValidationType = ValidationType.DTD;
@@ -103,7 +102,7 @@ namespace XMLMerge
             {
                 ds.ReadXml(xmlreader);
 
-                setTableNames(ds, itemname);
+                setTableNames(ds, tablename);
             } catch (Exception ex)
             {
                 Console.WriteLine(files[0] + " contains invalid XML, skipped..");
@@ -122,7 +121,7 @@ namespace XMLMerge
                 try
                 {
                     ds2.ReadXml(xmlreader2);
-                    setTableNames(ds2, itemname);
+                    setTableNames(ds2, tablename);
                     ds.Merge(ds2);
                 }
                 catch (Exception ex)
@@ -145,15 +144,18 @@ namespace XMLMerge
 
         static void Main(string[] args)
         {
+            Console.WriteLine("XMLMerge v2.3");
+
             try
             {
-                if (args.Length != 2)
+                if (args.Length != 3)
                 {
-                    exitWithMessage("Incorrect amount of parameters, use <directory> <outputfile>");
+                    exitWithMessage("Incorrect amount of parameters, use <directory> <outputfile> <tablename>");
                 }
 
                 string directory = args[0];
                 string outputFile = args[1];
+                string tablename = args[2];
 
                 if (outputFile.EndsWith("\\"))
                 {
@@ -180,7 +182,7 @@ namespace XMLMerge
                 }
 
                 // Merge XML files 
-                DataSet dataSet = mergeXMLFiles(xmlFiles);
+                DataSet dataSet = mergeXMLFiles(xmlFiles, tablename);
 
                 // Write merged XML file
                 string output = writeXML(dataSet, directory, outputFile);
