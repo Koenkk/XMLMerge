@@ -1,2 +1,2 @@
 # XMLMerge
-A tool for merging XML files.
+A tool for merging AFAS Connector XML files.
